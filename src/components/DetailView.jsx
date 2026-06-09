@@ -42,7 +42,7 @@ export function DetailView({ date, onBack }) {
           <h2 className="font-display text-3xl md:text-5xl leading-tight" style={{ color: 'var(--text)' }}>
             {date.title}
           </h2>
-          <p className="font-body text-sm mt-0.5 pb-1" style={{ color: 'var(--text)', opacity: 0.5 }}>
+          <p className="font-body text-sm mt-0.5 pb-2" style={{ color: 'var(--text)', opacity: 0.5 }}>
             {formattedDate}
           </p>
         </div>

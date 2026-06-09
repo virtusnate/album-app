@@ -1,7 +1,4 @@
-import { tiltFromId } from '../utils/tiltFromId'
-
 export function DateCard({ date, onClick }) {
-  const tilt = tiltFromId(date.id)
   const formattedDate = date.date?.toDate().toLocaleDateString('es-ES', {
     day: '2-digit',
     month: 'long',
@@ -13,9 +10,6 @@ export function DateCard({ date, onClick }) {
       role="article"
       onClick={() => onClick(date.id)}
       className="polaroid-card cursor-pointer"
-      style={{ transform: `rotate(${tilt}deg)` }}
-      onMouseEnter={(e) => { e.currentTarget.style.transform = 'rotate(0deg) translateY(-6px)' }}
-      onMouseLeave={(e) => { e.currentTarget.style.transform = `rotate(${tilt}deg)` }}
     >
       <div className="polaroid-frame">
         {/* Photo area */}
@@ -44,7 +38,7 @@ export function DateCard({ date, onClick }) {
           )}
         </div>
 
-        {/* Polaroid caption area — wider bottom like a real polaroid */}
+        {/* Polaroid caption */}
         <div className="polaroid-caption">
           <p className="font-script text-base leading-snug truncate" style={{ color: 'var(--text)' }}>
             {date.title}
