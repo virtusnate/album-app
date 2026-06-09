@@ -1,20 +1,36 @@
 export function HeroPhoto({ photo }) {
   if (!photo) return null
+
   return (
-    <div className="relative w-full overflow-hidden" style={{ height: '60vh' }}>
+    <div
+      className="relative w-full overflow-hidden select-none"
+      style={{ aspectRatio: '4/3', maxHeight: '65vh' }}
+    >
+      {/* Dominant-color fill — heavily blurred to read as solid color */}
       <img
         src={photo.storageUrl}
         alt=""
-        className="photo-analog w-full h-full object-cover"
+        aria-hidden="true"
+        className="absolute inset-0 w-full h-full object-cover"
         style={{
-          objectPosition: `${(photo.focalX ?? 0.5) * 100}% ${(photo.focalY ?? 0.5) * 100}%`,
+          filter: 'blur(60px) saturate(2) brightness(0.5)',
+          transform: 'scale(1.2)',
         }}
+        draggable={false}
       />
+
+      {/* Main photo — full image visible, no crop */}
+      <img
+        src={photo.storageUrl}
+        alt="Foto principal"
+        className="photo-analog absolute inset-0 w-full h-full object-contain"
+        draggable={false}
+      />
+
+      {/* Bottom gradient for title readability */}
       <div
-        className="absolute inset-0"
-        style={{
-          background: 'linear-gradient(to bottom, transparent 40%, rgba(44,26,14,0.7) 100%)',
-        }}
+        className="absolute inset-0 pointer-events-none"
+        style={{ background: 'linear-gradient(to bottom, transparent 50%, rgba(44,26,14,0.70) 100%)' }}
       />
     </div>
   )
