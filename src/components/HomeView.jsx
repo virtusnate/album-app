@@ -29,7 +29,7 @@ export function HomeView({ onSelectDate }) {
           <p className="font-body text-sm">Toca "+ Añadir Date" para empezar!</p>
         </div>
       ) : (
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 md:gap-5">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 md:gap-5 items-start">
           {dates.map((date) => (
             <DateCard key={date.id} date={date} onClick={onSelectDate} />
           ))}
