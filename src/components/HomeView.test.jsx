@@ -17,15 +17,16 @@ describe('HomeView', () => {
     expect(screen.getByText('Praia')).toBeInTheDocument()
   })
 
-  it('renders + New Date button', () => {
+  it('renders + Añadir Date button', () => {
     render(<HomeView onSelectDate={() => {}} />)
-    expect(screen.getByRole('button', { name: /nova aventura/i })).toBeInTheDocument()
+    const buttons = screen.getAllByRole('button', { name: /añadir date/i })
+    expect(buttons.length).toBeGreaterThanOrEqual(1)
   })
 
-  it('opens modal when + New Date is clicked', async () => {
+  it('opens modal when + Añadir Date is clicked', async () => {
     render(<HomeView onSelectDate={() => {}} />)
-    await userEvent.click(screen.getByRole('button', { name: /nova aventura/i }))
-    expect(screen.getByText('Nova aventura')).toBeInTheDocument()
+    await userEvent.click(screen.getAllByRole('button', { name: /añadir date/i })[0])
+    expect(screen.getByText('Añadir Date')).toBeInTheDocument()
   })
 
   it('calls onSelectDate when a card is clicked', async () => {

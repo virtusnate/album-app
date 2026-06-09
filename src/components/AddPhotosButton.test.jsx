@@ -9,6 +9,6 @@ vi.mock('../utils/uploadPhoto', () => ({ uploadPhoto: vi.fn().mockResolvedValue(
 describe('AddPhotosButton', () => {
   it('renders the button', () => {
     render(<AddPhotosButton dateId="date1" currentPhotoCount={2} />)
-    expect(screen.getByRole('button', { name: /adicionar fotos/i })).toBeInTheDocument()
+    expect(screen.getByRole('button', { name: /agregar fotos/i })).toBeInTheDocument()
   })
 })

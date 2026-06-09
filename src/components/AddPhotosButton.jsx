@@ -34,11 +34,10 @@ export function AddPhotosButton({ dateId, currentPhotoCount }) {
       <button
         onClick={() => inputRef.current.click()}
         disabled={uploading}
-        className="px-6 py-3 font-body text-sm text-white rounded-sm shadow-md disabled:opacity-40"
-        style={{ backgroundColor: 'var(--accent)' }}
-        aria-label="Adicionar fotos"
+        className="btn-accent w-full sm:w-auto px-8"
+        aria-label="Agregar fotos"
       >
-        {uploading ? 'Enviando...' : '+ Adicionar fotos'}
+        {uploading ? 'Subiendo...' : '+ Agregar fotos'}
       </button>
     </>
   )

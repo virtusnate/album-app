@@ -1,6 +1,6 @@
 import { DndContext, closestCenter, PointerSensor, useSensor, useSensors } from '@dnd-kit/core'
 import { SortableContext, rectSortingStrategy, arrayMove } from '@dnd-kit/sortable'
-import { doc, writeBatch } from 'firebase/firestore'
+import { doc, writeBatch, updateDoc, deleteDoc } from 'firebase/firestore'
 import { db } from '../firebase'
 import { SortablePhoto } from './SortablePhoto'
 
@@ -21,21 +21,37 @@ export function PhotoGrid({ photos, dateId }) {
     })
     await batch.commit()
 
-    // Sync denormalized cover photo on the date doc if first photo changed
     const newFirst = reordered[0]
     if (newFirst && newFirst.id !== photos[0]?.id) {
-      await import('firebase/firestore').then(({ updateDoc, doc: firestoreDoc }) =>
-        updateDoc(firestoreDoc(db, 'dates', dateId), {
-          coverPhoto: { storageUrl: newFirst.storageUrl, focalX: newFirst.focalX, focalY: newFirst.focalY },
+      await updateDoc(doc(db, 'dates', dateId), {
+        coverPhoto: { storageUrl: newFirst.storageUrl, focalX: newFirst.focalX, focalY: newFirst.focalY },
+      })
+    }
+  }
+
+  async function handleDelete(photo) {
+    await deleteDoc(doc(db, 'dates', dateId, 'photos', photo.id))
+
+    if (photo.order === 0) {
+      const remaining = photos
+        .filter((p) => p.id !== photo.id)
+        .sort((a, b) => a.order - b.order)
+
+      if (remaining.length > 0) {
+        const newCover = remaining[0]
+        await updateDoc(doc(db, 'dates', dateId), {
+          coverPhoto: { storageUrl: newCover.storageUrl, focalX: newCover.focalX, focalY: newCover.focalY },
         })
-      )
+      } else {
+        await updateDoc(doc(db, 'dates', dateId), { coverPhoto: null })
+      }
     }
   }
 
   if (photos.length === 0) {
     return (
       <div className="text-center py-16 opacity-50">
-        <p className="font-script text-xl">Nenhuma foto ainda...</p>
+        <p className="font-script text-xl">Sin fotos aún...</p>
       </div>
     )
   }
@@ -43,9 +59,9 @@ export function PhotoGrid({ photos, dateId }) {
   return (
     <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={handleDragEnd}>
       <SortableContext items={photos.map((p) => p.id)} strategy={rectSortingStrategy}>
-        <div className="grid grid-cols-3 gap-3">
+        <div className="grid grid-cols-2 md:grid-cols-3 gap-2 md:gap-3">
           {photos.map((photo) => (
-            <SortablePhoto key={photo.id} photo={photo} dateId={dateId} />
+            <SortablePhoto key={photo.id} photo={photo} dateId={dateId} onDelete={handleDelete} />
           ))}
         </div>
       </SortableContext>

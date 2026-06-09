@@ -1,12 +1,24 @@
-import { ref, uploadBytes, getDownloadURL } from 'firebase/storage'
 import { collection, addDoc, doc, updateDoc, serverTimestamp } from 'firebase/firestore'
-import { db, storage } from '../firebase'
+import { db } from '../firebase'
+
+const CLOUD_NAME = import.meta.env.VITE_CLOUDINARY_CLOUD_NAME
+const UPLOAD_PRESET = import.meta.env.VITE_CLOUDINARY_UPLOAD_PRESET
 
 export async function uploadPhoto(file, dateId, order) {
   const photoId = crypto.randomUUID()
-  const storageRef = ref(storage, `dates/${dateId}/${photoId}`)
-  await uploadBytes(storageRef, file)
-  const storageUrl = await getDownloadURL(storageRef)
+
+  const formData = new FormData()
+  formData.append('file', file)
+  formData.append('upload_preset', UPLOAD_PRESET)
+  formData.append('public_id', `dates/${dateId}/${photoId}`)
+
+  const res = await fetch(
+    `https://api.cloudinary.com/v1_1/${CLOUD_NAME}/image/upload`,
+    { method: 'POST', body: formData }
+  )
+  const data = await res.json()
+  const storageUrl = data.secure_url
+
   const docRef = await addDoc(collection(db, 'dates', dateId, 'photos'), {
     storageUrl,
     order,
@@ -14,11 +26,12 @@ export async function uploadPhoto(file, dateId, order) {
     focalY: 0.5,
     uploadedAt: serverTimestamp(),
   })
-  // Denormalize cover photo onto the date doc so DateCard can render without N+1 queries
+
   if (order === 0) {
     await updateDoc(doc(db, 'dates', dateId), {
       coverPhoto: { storageUrl, focalX: 0.5, focalY: 0.5 },
     })
   }
+
   return docRef.id
 }

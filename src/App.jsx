@@ -14,7 +14,7 @@ export default function App() {
 
   return (
     <>
-      <Header />
+      {!selectedDate && <Header />}
       {selectedDate ? (
         <DetailView date={selectedDate} onBack={() => setSelectedDateId(null)} />
       ) : (

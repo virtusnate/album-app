@@ -8,6 +8,8 @@ vi.mock('firebase/firestore', () => ({
     update: vi.fn(),
     commit: vi.fn().mockResolvedValue(undefined),
   })),
+  updateDoc: vi.fn().mockResolvedValue(undefined),
+  deleteDoc: vi.fn().mockResolvedValue(undefined),
 }))
 vi.mock('../firebase', () => ({ db: {} }))
 
@@ -25,6 +27,6 @@ describe('PhotoGrid', () => {
 
   it('renders empty state when no photos', () => {
     render(<PhotoGrid photos={[]} dateId="date1" />)
-    expect(screen.getByText(/nenhuma foto ainda/i)).toBeInTheDocument()
+    expect(screen.getByText(/sin fotos aún/i)).toBeInTheDocument()
   })
 })
