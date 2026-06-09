@@ -1,21 +1,19 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32">
-  <rect width="32" height="32" rx="5" fill="#F5E6C8"/>
-  <!-- chest body -->
-  <rect x="4" y="17" width="24" height="11" rx="2" fill="#C67B5C"/>
-  <!-- chest lid -->
-  <path d="M4 17 Q4 10 16 10 Q28 10 28 17 Z" fill="#A8603D"/>
-  <!-- top metal band -->
-  <rect x="4" y="15.5" width="24" height="2.5" rx="1" fill="#D4A574"/>
-  <!-- body stripe -->
-  <rect x="4" y="21" width="24" height="2" fill="#B07040" opacity="0.5"/>
-  <!-- clasp plate -->
-  <rect x="12.5" y="19.5" width="7" height="5" rx="1.2" fill="#D4A574"/>
-  <!-- clasp lock hole -->
-  <circle cx="16" cy="21.5" r="1.4" fill="#A8603D"/>
-  <rect x="15.3" y="21.5" width="1.4" height="2" rx="0.5" fill="#A8603D"/>
-  <!-- corner studs -->
-  <circle cx="6" cy="18.5" r="1" fill="#D4A574"/>
-  <circle cx="26" cy="18.5" r="1" fill="#D4A574"/>
-  <circle cx="6" cy="26" r="1" fill="#D4A574"/>
-  <circle cx="26" cy="26" r="1" fill="#D4A574"/>
+  <rect width="32" height="32" rx="6" fill="#F5E6C8"/>
+  <g transform="translate(16,16)">
+    <!-- 8 outer petals (terracotta) — 4 ellipses × 2 ends each -->
+    <ellipse rx="2.5" ry="6.5" fill="#C67B5C" opacity="0.82"/>
+    <ellipse rx="2.5" ry="6.5" fill="#C67B5C" opacity="0.82" transform="rotate(45)"/>
+    <ellipse rx="2.5" ry="6.5" fill="#C67B5C" opacity="0.82" transform="rotate(90)"/>
+    <ellipse rx="2.5" ry="6.5" fill="#C67B5C" opacity="0.82" transform="rotate(135)"/>
+    <!-- 8 inner petals (blush) — offset 22.5° -->
+    <ellipse rx="1.8" ry="4.5" fill="#E8B4B8" opacity="0.88" transform="rotate(22.5)"/>
+    <ellipse rx="1.8" ry="4.5" fill="#E8B4B8" opacity="0.88" transform="rotate(67.5)"/>
+    <ellipse rx="1.8" ry="4.5" fill="#E8B4B8" opacity="0.88" transform="rotate(112.5)"/>
+    <ellipse rx="1.8" ry="4.5" fill="#E8B4B8" opacity="0.88" transform="rotate(157.5)"/>
+    <!-- Center -->
+    <circle r="3.2" fill="#D4A574"/>
+    <circle r="1.8" fill="#C67B5C"/>
+    <circle r="0.8" fill="#F5E6C8"/>
+  </g>
 </svg>

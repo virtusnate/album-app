@@ -1,4 +1,9 @@
-export function DateCard({ date, onClick }) {
+import { useSortable } from '@dnd-kit/sortable'
+import { CSS } from '@dnd-kit/utilities'
+
+export function DateCard({ date, onClick, onDelete }) {
+  const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({ id: date.id })
+
   const formattedDate = date.date?.toDate().toLocaleDateString('es-ES', {
     day: '2-digit',
     month: 'long',
@@ -7,10 +12,42 @@ export function DateCard({ date, onClick }) {
 
   return (
     <article
+      ref={setNodeRef}
       role="article"
       onClick={() => onClick(date.id)}
-      className="polaroid-card cursor-pointer"
+      className="polaroid-card cursor-pointer relative group"
+      style={{
+        transform: CSS.Transform.toString(transform),
+        transition,
+        opacity: isDragging ? 0.4 : 1,
+      }}
     >
+      {/* Drag handle */}
+      <button
+        {...attributes}
+        {...listeners}
+        onClick={(e) => e.stopPropagation()}
+        className="absolute top-2 left-2 z-10 w-9 h-9 rounded-full flex items-center justify-center opacity-100 md:opacity-0 md:group-hover:opacity-100 transition-opacity shadow"
+        style={{ backgroundColor: 'rgba(253,246,227,0.92)', color: 'var(--text)', cursor: 'grab' }}
+        aria-label="Mover date"
+      >
+        <svg xmlns="http://www.w3.org/2000/svg" className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 8h16M4 16h16" />
+        </svg>
+      </button>
+
+      {/* Delete button */}
+      <button
+        onClick={(e) => { e.stopPropagation(); onDelete(date) }}
+        className="absolute top-2 right-2 z-10 w-9 h-9 rounded-full flex items-center justify-center opacity-100 md:opacity-0 md:group-hover:opacity-100 transition-opacity shadow"
+        style={{ backgroundColor: 'rgba(192,57,43,0.88)', color: '#fff' }}
+        aria-label="Eliminar date"
+      >
+        <svg xmlns="http://www.w3.org/2000/svg" className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+        </svg>
+      </button>
+
       <div className="polaroid-frame">
         {/* Photo area */}
         <div className="relative overflow-hidden" style={{ paddingBottom: '133%' }}>
@@ -43,7 +80,7 @@ export function DateCard({ date, onClick }) {
           <p className="font-script text-base leading-snug truncate" style={{ color: 'var(--text)' }}>
             {date.title}
           </p>
-          <p className="font-body text-xs mt-1" style={{ color: 'var(--text)', opacity: 0.5 }}>
+          <p className="font-body text-xs mt-1 pb-2" style={{ color: 'var(--text)', opacity: 0.5 }}>
             {formattedDate}
           </p>
         </div>
