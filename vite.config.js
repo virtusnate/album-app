@@ -3,7 +3,7 @@ import react from '@vitejs/plugin-react'
 
 export default defineConfig({
   plugins: [react()],
-  base: '/nath-dai-album/',
+  base: '/album-app/',
   test: {
     globals: true,
     environment: 'jsdom',
