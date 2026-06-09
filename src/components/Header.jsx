@@ -26,20 +26,6 @@ export function Header() {
           <circle cx="18" cy="18" r="2"   fill="var(--blush)" opacity="0.45"/>
         </svg>
 
-        {/* Central 8-petal flower */}
-        <svg width="32" height="32" viewBox="0 0 32 32" fill="none" aria-hidden="true" className="flex-shrink-0">
-          <ellipse cx="16" cy="7"  rx="3" ry="6.5" fill="var(--blush)"  opacity="0.62" transform="rotate(0   16 16)"/>
-          <ellipse cx="16" cy="7"  rx="3" ry="6.5" fill="var(--blush)"  opacity="0.62" transform="rotate(45  16 16)"/>
-          <ellipse cx="16" cy="7"  rx="3" ry="6.5" fill="var(--blush)"  opacity="0.62" transform="rotate(90  16 16)"/>
-          <ellipse cx="16" cy="7"  rx="3" ry="6.5" fill="var(--blush)"  opacity="0.62" transform="rotate(135 16 16)"/>
-          <ellipse cx="16" cy="7"  rx="3" ry="6.5" fill="var(--accent)" opacity="0.38" transform="rotate(22.5  16 16)"/>
-          <ellipse cx="16" cy="7"  rx="3" ry="6.5" fill="var(--accent)" opacity="0.38" transform="rotate(67.5  16 16)"/>
-          <ellipse cx="16" cy="7"  rx="3" ry="6.5" fill="var(--accent)" opacity="0.38" transform="rotate(112.5 16 16)"/>
-          <ellipse cx="16" cy="7"  rx="3" ry="6.5" fill="var(--accent)" opacity="0.38" transform="rotate(157.5 16 16)"/>
-          <circle cx="16" cy="16" r="4.5" fill="var(--accent)" opacity="0.88"/>
-          <circle cx="16" cy="16" r="2"   fill="var(--card)"/>
-        </svg>
-
         {/* Right botanical arm — mirror of left */}
         <svg width="160" height="28" viewBox="0 0 160 28" fill="none" aria-hidden="true" className="flex-1 min-w-0" style={{ transform: 'scaleX(-1)' }}>
           <line x1="160" y1="14" x2="0" y2="14" stroke="var(--border)" strokeWidth="0.8" opacity="0.5"/>
