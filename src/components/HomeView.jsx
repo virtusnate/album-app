@@ -52,6 +52,19 @@ export function HomeView({ onSelectDate }) {
     await batch.commit()
   }
 
+  async function handleMove(id, direction) {
+    const index = orderedDates.findIndex((d) => d.id === id)
+    const newIndex = direction === 'up' ? index - 1 : index + 1
+    if (newIndex < 0 || newIndex >= orderedDates.length) return
+    const reordered = arrayMove(orderedDates, index, newIndex)
+    setOrderedDates(reordered)
+    const batch = writeBatch(db)
+    reordered.forEach((date, i) => {
+      batch.update(doc(db, 'dates', date.id), { order: i })
+    })
+    await batch.commit()
+  }
+
   async function handleDeleteConfirm() {
     if (!dateToDelete) return
     await deleteDoc(doc(db, 'dates', dateToDelete.id))
@@ -80,12 +93,16 @@ export function HomeView({ onSelectDate }) {
         <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={handleDragEnd}>
           <SortableContext items={orderedDates.map((d) => d.id)} strategy={rectSortingStrategy}>
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 md:gap-5 items-start">
-              {orderedDates.map((date) => (
+              {orderedDates.map((date, i) => (
                 <DateCard
                   key={date.id}
                   date={date}
                   onClick={onSelectDate}
                   onDelete={setDateToDelete}
+                  onMoveUp={(id) => handleMove(id, 'up')}
+                  onMoveDown={(id) => handleMove(id, 'down')}
+                  isFirst={i === 0}
+                  isLast={i === orderedDates.length - 1}
                 />
               ))}
             </div>

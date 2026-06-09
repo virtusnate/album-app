@@ -1,8 +1,14 @@
+import { useRef, useState, useCallback } from 'react'
 import { useSortable } from '@dnd-kit/sortable'
 import { CSS } from '@dnd-kit/utilities'
 
-export function DateCard({ date, onClick, onDelete }) {
+const LONG_PRESS_MS = 500
+
+export function DateCard({ date, onClick, onDelete, onMoveUp, onMoveDown, isFirst, isLast }) {
   const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({ id: date.id })
+  const [mobileActive, setMobileActive] = useState(false)
+  const timerRef = useRef(null)
+  const didLongPressRef = useRef(false)
 
   const formattedDate = date.date?.toDate().toLocaleDateString('es-ES', {
     day: '2-digit',
@@ -10,16 +16,49 @@ export function DateCard({ date, onClick, onDelete }) {
     year: 'numeric',
   })
 
+  const startLongPress = useCallback((e) => {
+    if (e.pointerType !== 'touch') return
+    didLongPressRef.current = false
+    timerRef.current = setTimeout(() => {
+      didLongPressRef.current = true
+      setMobileActive(true)
+      if (navigator.vibrate) navigator.vibrate(30)
+    }, LONG_PRESS_MS)
+  }, [])
+
+  const cancelLongPress = useCallback(() => {
+    clearTimeout(timerRef.current)
+  }, [])
+
+  const handleCardClick = useCallback((e) => {
+    if (didLongPressRef.current) {
+      e.stopPropagation()
+      didLongPressRef.current = false
+      return
+    }
+    if (mobileActive) {
+      setMobileActive(false)
+      return
+    }
+    onClick(date.id)
+  }, [mobileActive, onClick, date.id])
+
   return (
     <article
       ref={setNodeRef}
       role="article"
-      onClick={() => onClick(date.id)}
+      onClick={handleCardClick}
+      onPointerDown={startLongPress}
+      onPointerUp={cancelLongPress}
+      onPointerCancel={cancelLongPress}
       className="polaroid-card cursor-pointer relative group"
       style={{
         transform: CSS.Transform.toString(transform),
         transition,
         opacity: isDragging ? 0.4 : 1,
+        outline: mobileActive ? '2.5px solid var(--accent)' : undefined,
+        outlineOffset: mobileActive ? '3px' : undefined,
+        borderRadius: mobileActive ? '2px' : undefined,
       }}
     >
       <div className="polaroid-frame">
@@ -60,12 +99,12 @@ export function DateCard({ date, onClick, onDelete }) {
         </div>
       </div>
 
-      {/* Drag handle — rendered after frame so it stacks on top */}
+      {/* ── Desktop: drag handle (hover) ─────────────────────── */}
       <button
         {...attributes}
         {...listeners}
         onClick={(e) => e.stopPropagation()}
-        className="date-card-action-btn opacity-100 md:opacity-0 md:group-hover:opacity-100"
+        className="date-card-action-btn hidden md:flex opacity-0 group-hover:opacity-100"
         style={{ top: '0.625rem', left: '0.625rem', cursor: 'grab' }}
         aria-label="Mover date"
       >
@@ -74,17 +113,60 @@ export function DateCard({ date, onClick, onDelete }) {
         </svg>
       </button>
 
-      {/* Delete button — rendered after frame so it stacks on top */}
+      {/* ── Desktop: delete (hover) ───────────────────────────── */}
       <button
         onClick={(e) => { e.stopPropagation(); onDelete(date) }}
-        className="date-card-action-btn date-card-delete-btn opacity-100 md:opacity-0 md:group-hover:opacity-100"
-        style={{ top: '0.625rem', right: '0.625rem' }}
+        className="date-card-action-btn date-card-delete-btn hidden md:flex opacity-0 group-hover:opacity-100"
+        style={{ top: '0.5rem', right: '0.5rem', width: '42px', height: '42px' }}
         aria-label="Eliminar date"
       >
         <svg xmlns="http://www.w3.org/2000/svg" className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
         </svg>
       </button>
+
+      {/* ── Mobile: up / down arrows (long-press reveal) ─────── */}
+      {mobileActive && (
+        <>
+          {!isFirst && (
+            <button
+              onClick={(e) => { e.stopPropagation(); onMoveUp(date.id) }}
+              className="date-card-action-btn md:hidden"
+              style={{ top: '0.625rem', left: '0.625rem' }}
+              aria-label="Subir date"
+            >
+              <svg xmlns="http://www.w3.org/2000/svg" className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M5 15l7-7 7 7" />
+              </svg>
+            </button>
+          )}
+
+          {!isLast && (
+            <button
+              onClick={(e) => { e.stopPropagation(); onMoveDown(date.id) }}
+              className="date-card-action-btn md:hidden"
+              style={{ bottom: '0.625rem', left: '0.625rem' }}
+              aria-label="Bajar date"
+            >
+              <svg xmlns="http://www.w3.org/2000/svg" className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M19 9l-7 7-7-7" />
+              </svg>
+            </button>
+          )}
+
+          {/* Mobile delete */}
+          <button
+            onClick={(e) => { e.stopPropagation(); setMobileActive(false); onDelete(date) }}
+            className="date-card-action-btn date-card-delete-btn md:hidden"
+            style={{ top: '0.625rem', right: '0.625rem' }}
+            aria-label="Eliminar date"
+          >
+            <svg xmlns="http://www.w3.org/2000/svg" className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+            </svg>
+          </button>
+        </>
+      )}
     </article>
   )
 }
