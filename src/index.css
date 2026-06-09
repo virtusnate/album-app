@@ -8,22 +8,31 @@
   --card: #FDF6E3;
   --text: #2C1A0E;
   --accent: #C67B5C;
+  --accent-dark: #A8603D;
   --border: #D4A574;
   --muted: #4A7B7C;
   --blush: #E8B4B8;
-  --grain-opacity: 0.15;
-  --light-leak: rgba(255, 200, 100, 0.15);
+  --grain-opacity: 0.12;
+  --light-leak: rgba(255, 200, 100, 0.12);
+  --shadow-card: 0 4px 16px rgba(44, 26, 14, 0.14), 0 1px 4px rgba(44, 26, 14, 0.08);
+  --shadow-card-hover: 0 8px 28px rgba(44, 26, 14, 0.20), 0 2px 8px rgba(44, 26, 14, 0.10);
+  --shadow-modal: 0 20px 60px rgba(44, 26, 14, 0.30);
 }
 
+/* ── Base ─────────────────────────────────────── */
 body {
   background-color: var(--bg);
   color: var(--text);
   font-family: 'Merriweather', serif;
   min-height: 100dvh;
   position: relative;
+  overscroll-behavior: contain;
+  -webkit-text-size-adjust: 100%;
+  /* iOS safe area padding at bottom for home indicator */
+  padding-bottom: env(safe-area-inset-bottom);
 }
 
-/* Film grain overlay on page background */
+/* Film grain overlay */
 body::before {
   content: '';
   position: fixed;
@@ -42,18 +51,162 @@ body::before {
   z-index: 1;
 }
 
-/* Analog photo filter applied to all album images */
-.photo-analog {
-  filter: sepia(15%) contrast(1.05) saturate(0.85);
-  position: relative;
+/* ── Touch optimization ───────────────────────── */
+button,
+[role="button"],
+input[type="file"],
+label[for] {
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
 }
 
-/* Light leak overlay on photo cards */
+/* ── Analog photo filter ──────────────────────── */
+.photo-analog {
+  filter: sepia(15%) contrast(1.05) saturate(0.85);
+}
+
+/* Light leak warm overlay */
 .photo-analog::after {
   content: '';
   position: absolute;
   inset: 0;
-  background: linear-gradient(135deg, var(--light-leak) 0%, transparent 60%);
+  background: linear-gradient(135deg, var(--light-leak) 0%, transparent 55%);
   pointer-events: none;
   border-radius: inherit;
+}
+
+/* ── Polaroid card ────────────────────────────── */
+.polaroid-frame {
+  background-color: var(--card);
+  padding: 8px 8px 0 8px;
+  box-shadow: var(--shadow-card);
+  border-radius: 2px;
+}
+
+.polaroid-caption {
+  padding: 7px 9px 5px;
+}
+
+
+.polaroid-card {
+  transition: transform 220ms ease-out, box-shadow 220ms ease-out;
+}
+
+.polaroid-card:hover,
+.polaroid-card:focus-visible {
+  box-shadow: var(--shadow-card-hover);
+}
+
+/* Active/pressed feedback on mobile */
+.polaroid-card:active {
+  transform: scale(0.97) !important;
+  box-shadow: var(--shadow-card) !important;
+  transition: transform 80ms ease-out, box-shadow 80ms ease-out;
+}
+
+/* ── Accent button ────────────────────────────── */
+.btn-accent {
+  background-color: var(--accent);
+  color: #fff;
+  font-family: 'Merriweather', serif;
+  font-size: 0.875rem;
+  padding: 0.75rem 1.5rem;
+  border-radius: 9999px;
+  box-shadow: 0 2px 8px rgba(198, 123, 92, 0.35);
+  min-height: 44px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  transition: background-color 150ms ease-out, box-shadow 150ms ease-out, transform 80ms ease-out;
+}
+
+.btn-accent:hover {
+  background-color: var(--accent-dark);
+  box-shadow: 0 4px 14px rgba(198, 123, 92, 0.45);
+}
+
+.btn-accent:active {
+  transform: scale(0.97);
+  box-shadow: 0 1px 4px rgba(198, 123, 92, 0.3);
+}
+
+.btn-accent:disabled {
+  opacity: 0.45;
+  pointer-events: none;
+}
+
+/* ── FAB (mobile floating action button) ─────── */
+.fab {
+  position: fixed;
+  bottom: calc(1.5rem + env(safe-area-inset-bottom));
+  right: 1rem;
+  z-index: 40;
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  background-color: var(--accent);
+  color: #fff;
+  box-shadow: 0 4px 16px rgba(198, 123, 92, 0.50), 0 1px 4px rgba(44,26,14,0.12);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: transform 150ms ease-out, box-shadow 150ms ease-out;
+}
+
+.fab:active {
+  transform: scale(0.93);
+  box-shadow: 0 2px 8px rgba(198, 123, 92, 0.40);
+}
+
+/* ── Decorative header divider ────────────────── */
+.header-divider {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  justify-content: center;
+  margin-top: 0.75rem;
+}
+
+.header-divider::before,
+.header-divider::after {
+  content: '';
+  flex: 1;
+  max-width: 80px;
+  height: 1px;
+  background: linear-gradient(to right, transparent, var(--border));
+}
+
+.header-divider::after {
+  background: linear-gradient(to left, transparent, var(--border));
+}
+
+/* ── Reduced motion ───────────────────────────── */
+@media (prefers-reduced-motion: reduce) {
+  .polaroid-card,
+  .btn-accent,
+  .fab {
+    transition: none;
+  }
+}
+
+/* ── iOS notch / safe area header ─────────────── */
+header {
+  padding-top: max(1.25rem, env(safe-area-inset-top));
+  padding-left: max(1rem, env(safe-area-inset-left));
+  padding-right: max(1rem, env(safe-area-inset-right));
+}
+
+@media (min-width: 640px) {
+  header {
+    padding-top: max(2rem, env(safe-area-inset-top));
+    padding-left: max(1.5rem, env(safe-area-inset-left));
+    padding-right: max(1.5rem, env(safe-area-inset-right));
+  }
+}
+
+/* No tilt in single-column mobile layout */
+@media (max-width: 639px) {
+  .polaroid-card {
+    transform: none !important;
+  }
 }
