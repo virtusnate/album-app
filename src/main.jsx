@@ -1,17 +1,10 @@
 import { StrictMode } from 'react'
 import { createRoot } from 'react-dom/client'
 import './index.css'
-
-function App() {
-  return (
-    <div className="min-h-screen bg-parchment font-body flex items-center justify-center">
-      <h1 className="font-display text-4xl text-sepia">Nath & Dai</h1>
-    </div>
-  )
-}
+import App from './App.jsx'
 
 createRoot(document.getElementById('root')).render(
   <StrictMode>
     <App />
-  </StrictMode>,
+  </StrictMode>
 )
