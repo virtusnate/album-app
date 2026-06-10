@@ -103,6 +103,7 @@ export function HomeView({ onSelectDate }) {
           <p className="font-body text-sm">Toca "+ Añadir Date" para empezar!</p>
         </div>
       ) : (
+        <>
         <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={handleDragEnd}>
           <SortableContext items={orderedDates.map((d) => d.id)} strategy={rectSortingStrategy}>
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 md:gap-5 items-start">
@@ -155,6 +156,7 @@ export function HomeView({ onSelectDate }) {
             )}
           </button>
         </div>
+        </>
       )}
 
       {/* FAB — add new date (mobile only) */}
