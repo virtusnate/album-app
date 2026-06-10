@@ -5,7 +5,7 @@ import { FocalPointEditor } from './FocalPointEditor'
 
 const LONG_PRESS_MS = 500
 
-export function SortablePhoto({ photo, dateId, onDelete, onOpenLightbox }) {
+export function SortablePhoto({ photo, dateId, editMode, onDelete, onOpenLightbox }) {
   const [editingFocal, setEditingFocal] = useState(false)
   const [mobileActive, setMobileActive] = useState(false)
   const timerRef = useRef(null)
@@ -87,7 +87,7 @@ export function SortablePhoto({ photo, dateId, onDelete, onOpenLightbox }) {
           {...attributes}
           {...listeners}
           onClick={(e) => e.stopPropagation()}
-          className="date-card-action-btn hidden md:flex opacity-0 group-hover:opacity-100"
+          className={`date-card-action-btn hidden md:flex ${editMode ? 'opacity-100' : 'opacity-0 group-hover:opacity-100'}`}
           style={{ top: '0.5rem', left: '0.5rem', cursor: 'grab' }}
           aria-label="Mover foto"
         >
@@ -100,7 +100,7 @@ export function SortablePhoto({ photo, dateId, onDelete, onOpenLightbox }) {
         {photo.type !== 'video' && (
           <button
             onClick={(e) => { e.stopPropagation(); setEditingFocal(true) }}
-            className="date-card-action-btn hidden md:flex opacity-0 group-hover:opacity-100"
+            className={`date-card-action-btn hidden md:flex ${editMode ? 'opacity-100' : 'opacity-0 group-hover:opacity-100'}`}
             style={{ bottom: '0.5rem', left: '0.5rem' }}
             aria-label="Punto de enfoque"
           >
@@ -114,7 +114,7 @@ export function SortablePhoto({ photo, dateId, onDelete, onOpenLightbox }) {
         {/* ── Desktop: delete ── */}
         <button
           onClick={(e) => { e.stopPropagation(); onDelete(photo) }}
-          className="date-card-action-btn date-card-delete-btn hidden md:flex opacity-0 group-hover:opacity-100"
+          className={`date-card-action-btn date-card-delete-btn hidden md:flex ${editMode ? 'opacity-100' : 'opacity-0 group-hover:opacity-100'}`}
           style={{ top: '0.5rem', right: '0.5rem', width: '42px', height: '42px' }}
           aria-label="Eliminar foto"
         >
@@ -123,8 +123,8 @@ export function SortablePhoto({ photo, dateId, onDelete, onOpenLightbox }) {
           </svg>
         </button>
 
-        {/* ── Mobile: long-press revealed actions ── */}
-        {mobileActive && (
+        {/* ── Mobile: long-press or editMode reveals actions ── */}
+        {(mobileActive || editMode) && (
           <>
             {photo.type !== 'video' && (
               <button

@@ -4,7 +4,7 @@ import { doc, writeBatch, updateDoc, deleteDoc } from 'firebase/firestore'
 import { db } from '../firebase'
 import { SortablePhoto } from './SortablePhoto'
 
-export function PhotoGrid({ photos, dateId, onOpenLightbox }) {
+export function PhotoGrid({ photos, dateId, editMode, onOpenLightbox }) {
   const sensors = useSensors(useSensor(PointerSensor, { activationConstraint: { distance: 8 } }))
 
   async function handleDragEnd(event) {
@@ -65,6 +65,7 @@ export function PhotoGrid({ photos, dateId, onOpenLightbox }) {
               key={photo.id}
               photo={photo}
               dateId={dateId}
+              editMode={editMode}
               onDelete={handleDelete}
               onOpenLightbox={onOpenLightbox ? () => onOpenLightbox(i) : undefined}
             />
