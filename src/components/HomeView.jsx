@@ -122,34 +122,42 @@ export function HomeView({ onSelectDate }) {
             </div>
           </SortableContext>
         </DndContext>
+
+        {/* Inline edit toggle — mobile only, below the card grid */}
+        <div className="flex justify-center mt-6 sm:hidden">
+          <button
+            onClick={() => setEditMode((v) => !v)}
+            aria-label={editMode ? 'Listo' : 'Editar dates'}
+            className="inline-flex items-center gap-2 px-5 py-2.5 rounded-full font-body text-sm transition-all duration-150"
+            style={{
+              minHeight: '44px',
+              backgroundColor: editMode ? 'var(--accent)' : 'rgba(44,26,14,0.08)',
+              color: editMode ? '#fff' : 'var(--text)',
+              boxShadow: editMode ? '0 2px 8px rgba(198,123,92,0.35)' : 'none',
+              touchAction: 'manipulation',
+              WebkitTapHighlightColor: 'transparent',
+            }}
+          >
+            {editMode ? (
+              <>
+                <svg xmlns="http://www.w3.org/2000/svg" className="w-4 h-4 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
+                </svg>
+                Listo
+              </>
+            ) : (
+              <>
+                <svg xmlns="http://www.w3.org/2000/svg" className="w-4 h-4 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+                </svg>
+                Editar
+              </>
+            )}
+          </button>
+        </div>
       )}
 
-      {/* FAB left — edit mode toggle (mobile only) */}
-      <button
-        onClick={() => setEditMode((v) => !v)}
-        className="fab sm:hidden"
-        style={{
-          right: 'auto',
-          left: '1rem',
-          backgroundColor: editMode ? 'var(--accent-dark)' : 'rgba(44,26,14,0.55)',
-          boxShadow: editMode
-            ? '0 4px 16px rgba(168,96,61,0.55), 0 1px 4px rgba(44,26,14,0.15)'
-            : '0 4px 16px rgba(44,26,14,0.30), 0 1px 4px rgba(44,26,14,0.12)',
-        }}
-        aria-label={editMode ? 'Listo' : 'Editar dates'}
-      >
-        {editMode ? (
-          <svg xmlns="http://www.w3.org/2000/svg" className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
-            <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
-          </svg>
-        ) : (
-          <svg xmlns="http://www.w3.org/2000/svg" className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-            <path strokeLinecap="round" strokeLinejoin="round" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
-          </svg>
-        )}
-      </button>
-
-      {/* FAB right — add new date (mobile only) */}
+      {/* FAB — add new date (mobile only) */}
       <button onClick={() => setShowModal(true)} className="fab sm:hidden" aria-label="Añadir Date">
         <svg xmlns="http://www.w3.org/2000/svg" className="w-7 h-7" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
           <path strokeLinecap="round" strokeLinejoin="round" d="M12 4v16m8-8H4" />
