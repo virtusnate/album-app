@@ -4,7 +4,7 @@ import { doc, writeBatch, updateDoc, deleteDoc } from 'firebase/firestore'
 import { db } from '../firebase'
 import { SortablePhoto } from './SortablePhoto'
 
-export function PhotoGrid({ photos, dateId }) {
+export function PhotoGrid({ photos, dateId, onOpenLightbox }) {
   const sensors = useSensors(useSensor(PointerSensor, { activationConstraint: { distance: 8 } }))
 
   async function handleDragEnd(event) {
@@ -60,8 +60,14 @@ export function PhotoGrid({ photos, dateId }) {
     <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={handleDragEnd}>
       <SortableContext items={photos.map((p) => p.id)} strategy={rectSortingStrategy}>
         <div className="grid grid-cols-2 md:grid-cols-3 gap-2 md:gap-3">
-          {photos.map((photo) => (
-            <SortablePhoto key={photo.id} photo={photo} dateId={dateId} onDelete={handleDelete} />
+          {photos.map((photo, i) => (
+            <SortablePhoto
+              key={photo.id}
+              photo={photo}
+              dateId={dateId}
+              onDelete={handleDelete}
+              onOpenLightbox={() => onOpenLightbox(i)}
+            />
           ))}
         </div>
       </SortableContext>

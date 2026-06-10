@@ -3,7 +3,7 @@ import { useSortable } from '@dnd-kit/sortable'
 import { CSS } from '@dnd-kit/utilities'
 import { FocalPointEditor } from './FocalPointEditor'
 
-export function SortablePhoto({ photo, dateId, onDelete }) {
+export function SortablePhoto({ photo, dateId, onDelete, onOpenLightbox }) {
   const [editingFocal, setEditingFocal] = useState(false)
   const [confirmDelete, setConfirmDelete] = useState(false)
   const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({ id: photo.id })
@@ -44,7 +44,7 @@ export function SortablePhoto({ photo, dateId, onDelete }) {
             alt="Foto"
             className="photo-analog absolute inset-0 w-full h-full object-cover cursor-pointer"
             style={{ objectPosition: `${(photo.focalX ?? 0.5) * 100}% ${(photo.focalY ?? 0.5) * 100}%` }}
-            onClick={() => !confirmDelete && setEditingFocal(true)}
+            onClick={() => !confirmDelete && onOpenLightbox && onOpenLightbox()}
           />
         </div>
 
@@ -58,6 +58,19 @@ export function SortablePhoto({ photo, dateId, onDelete }) {
         >
           <svg xmlns="http://www.w3.org/2000/svg" className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 8h16M4 16h16" />
+          </svg>
+        </button>
+
+        {/* Focal point button */}
+        <button
+          onClick={(e) => { e.stopPropagation(); setEditingFocal(true) }}
+          className="absolute bottom-2 left-2 w-8 h-8 rounded-full flex items-center justify-center opacity-100 md:opacity-0 md:group-hover:opacity-100 transition-opacity shadow"
+          style={{ backgroundColor: 'rgba(253,246,227,0.9)', color: 'var(--text)' }}
+          aria-label="Editar punto focal"
+        >
+          <svg xmlns="http://www.w3.org/2000/svg" className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
           </svg>
         </button>
 

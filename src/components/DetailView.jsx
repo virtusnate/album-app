@@ -1,24 +1,23 @@
+import { useState } from 'react'
 import { usePhotos } from '../hooks/usePhotos'
 import { HeroPhoto } from './HeroPhoto'
 import { PhotoGrid } from './PhotoGrid'
 import { AddPhotosButton } from './AddPhotosButton'
+import { PhotoLightbox } from './PhotoLightbox'
 
 export function DetailView({ date, onBack }) {
   const photos = usePhotos(date.id)
+  const [lightboxIndex, setLightboxIndex] = useState(null)
   const coverPhoto = photos[0] ?? null
 
   const formattedDate = date.date?.toDate().toLocaleDateString('es-ES', {
-    day: '2-digit',
-    month: 'long',
-    year: 'numeric',
+    day: '2-digit', month: 'long', year: 'numeric',
   })
 
   return (
     <main>
-      {/* Hero — full width, back button overlaid */}
       <div className="relative">
         <HeroPhoto photo={coverPhoto} />
-
         <button
           onClick={onBack}
           className="absolute left-4 flex items-center gap-1.5 px-3 py-2 rounded-full min-h-[44px] backdrop-blur-sm"
@@ -36,7 +35,6 @@ export function DetailView({ date, onBack }) {
         </button>
       </div>
 
-      {/* Title + date immediately below the hero */}
       <div className="max-w-5xl mx-auto px-4 md:px-6 pt-3 pb-10 md:pb-14">
         <div className="mb-4 md:mb-6">
           <h2 className="font-display text-3xl md:text-5xl leading-tight" style={{ color: 'var(--text)' }}>
@@ -47,12 +45,24 @@ export function DetailView({ date, onBack }) {
           </p>
         </div>
 
-        <PhotoGrid photos={photos} dateId={date.id} />
+        <PhotoGrid
+          photos={photos}
+          dateId={date.id}
+          onOpenLightbox={setLightboxIndex}
+        />
 
         <div className="flex justify-center mt-8 md:mt-10">
           <AddPhotosButton dateId={date.id} currentPhotoCount={photos.length} />
         </div>
       </div>
+
+      {lightboxIndex !== null && (
+        <PhotoLightbox
+          photos={photos}
+          startIndex={lightboxIndex}
+          onClose={() => setLightboxIndex(null)}
+        />
+      )}
     </main>
   )
 }

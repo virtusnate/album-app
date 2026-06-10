@@ -270,3 +270,18 @@ header {
   }
 }
 
+/* ── Lightbox ─────────────────────────────────────── */
+@keyframes lightbox-in {
+  from { opacity: 0; transform: scale(0.94); }
+  to   { opacity: 1; transform: scale(1); }
+}
+@keyframes lightbox-out {
+  from { opacity: 1; }
+  to   { opacity: 0; }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .lightbox-enter { animation: lightbox-in 250ms cubic-bezier(0.22, 1, 0.36, 1) forwards; }
+  .lightbox-exit  { animation: lightbox-out 150ms ease-in forwards; }
+}
+
