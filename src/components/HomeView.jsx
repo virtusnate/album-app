@@ -7,11 +7,13 @@ import { useDates } from '../hooks/useDates'
 import { DateCard } from './DateCard'
 import { CreateDateModal } from './CreateDateModal'
 import { ConfirmDialog } from './ConfirmDialog'
+
 export function HomeView({ onSelectDate }) {
   const dates = useDates()
   const [orderedDates, setOrderedDates] = useState([])
   const [showModal, setShowModal] = useState(false)
   const [dateToDelete, setDateToDelete] = useState(null)
+  const [editMode, setEditMode] = useState(false)
   const initialized = useRef(false)
 
   const sensors = useSensors(useSensor(PointerSensor, { activationConstraint: { distance: 8 } }))
@@ -73,8 +75,20 @@ export function HomeView({ onSelectDate }) {
 
   return (
     <main className="max-w-6xl w-full mx-auto px-4 md:px-6 pt-4 md:pt-8 pb-24 sm:pb-10">
-      {/* Desktop button */}
-      <div className="hidden sm:flex justify-end mb-6 md:mb-8 flex-shrink-0">
+      {/* Desktop buttons */}
+      <div className="hidden sm:flex justify-end items-center gap-3 mb-6 md:mb-8 flex-shrink-0">
+        <button
+          onClick={() => setEditMode((v) => !v)}
+          aria-label={editMode ? 'Listo' : 'Editar dates'}
+          className="btn-accent"
+          style={!editMode ? {
+            backgroundColor: 'rgba(44,26,14,0.10)',
+            color: 'var(--text)',
+            boxShadow: 'none',
+          } : undefined}
+        >
+          {editMode ? '✓ Listo' : 'Editar'}
+        </button>
         <button onClick={() => setShowModal(true)} className="btn-accent" aria-label="Añadir Date">
           + Añadir Date
         </button>
@@ -96,6 +110,7 @@ export function HomeView({ onSelectDate }) {
                 <DateCard
                   key={date.id}
                   date={date}
+                  editMode={editMode}
                   onClick={onSelectDate}
                   onDelete={setDateToDelete}
                   onMoveUp={(id) => handleMove(id, 'up')}
@@ -109,7 +124,32 @@ export function HomeView({ onSelectDate }) {
         </DndContext>
       )}
 
-      {/* FAB — mobile only */}
+      {/* FAB left — edit mode toggle (mobile only) */}
+      <button
+        onClick={() => setEditMode((v) => !v)}
+        className="fab sm:hidden"
+        style={{
+          right: 'auto',
+          left: '1rem',
+          backgroundColor: editMode ? 'var(--accent-dark)' : 'rgba(44,26,14,0.55)',
+          boxShadow: editMode
+            ? '0 4px 16px rgba(168,96,61,0.55), 0 1px 4px rgba(44,26,14,0.15)'
+            : '0 4px 16px rgba(44,26,14,0.30), 0 1px 4px rgba(44,26,14,0.12)',
+        }}
+        aria-label={editMode ? 'Listo' : 'Editar dates'}
+      >
+        {editMode ? (
+          <svg xmlns="http://www.w3.org/2000/svg" className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
+            <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
+          </svg>
+        ) : (
+          <svg xmlns="http://www.w3.org/2000/svg" className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+            <path strokeLinecap="round" strokeLinejoin="round" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+          </svg>
+        )}
+      </button>
+
+      {/* FAB right — add new date (mobile only) */}
       <button onClick={() => setShowModal(true)} className="fab sm:hidden" aria-label="Añadir Date">
         <svg xmlns="http://www.w3.org/2000/svg" className="w-7 h-7" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
           <path strokeLinecap="round" strokeLinejoin="round" d="M12 4v16m8-8H4" />
@@ -126,8 +166,6 @@ export function HomeView({ onSelectDate }) {
           onCancel={() => setDateToDelete(null)}
         />
       )}
-
-
     </main>
   )
 }

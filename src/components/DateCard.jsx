@@ -1,10 +1,8 @@
-import { useState } from 'react'
 import { useSortable } from '@dnd-kit/sortable'
 import { CSS } from '@dnd-kit/utilities'
 
-export function DateCard({ date, onClick, onDelete, onMoveUp, onMoveDown, isFirst, isLast }) {
+export function DateCard({ date, onClick, onDelete, onMoveUp, onMoveDown, isFirst, isLast, editMode }) {
   const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({ id: date.id })
-  const [editActive, setEditActive] = useState(false)
 
   const formattedDate = date.date?.toDate().toLocaleDateString('es-ES', {
     day: '2-digit',
@@ -13,7 +11,7 @@ export function DateCard({ date, onClick, onDelete, onMoveUp, onMoveDown, isFirs
   })
 
   function handleCardClick() {
-    if (editActive) { setEditActive(false); return }
+    if (editMode) return
     onClick(date.id)
   }
 
@@ -22,14 +20,12 @@ export function DateCard({ date, onClick, onDelete, onMoveUp, onMoveDown, isFirs
       ref={setNodeRef}
       role="article"
       onClick={handleCardClick}
-      className="polaroid-card cursor-pointer relative"
+      className="polaroid-card relative"
       style={{
         transform: CSS.Transform.toString(transform),
         transition,
         opacity: isDragging ? 0.4 : 1,
-        outline: editActive ? '2.5px solid var(--accent)' : undefined,
-        outlineOffset: editActive ? '3px' : undefined,
-        borderRadius: editActive ? '2px' : undefined,
+        cursor: editMode ? 'default' : 'pointer',
       }}
     >
       <div className="polaroid-frame">
@@ -59,34 +55,14 @@ export function DateCard({ date, onClick, onDelete, onMoveUp, onMoveDown, isFirs
           )}
         </div>
 
-        {/* Caption + toggle button */}
-        <div className="polaroid-caption flex items-center justify-between gap-2">
-          <div className="min-w-0 flex-1">
-            <p className="font-script text-base leading-snug truncate" style={{ color: 'var(--text)' }}>
-              {date.title}
-            </p>
-            <p className="font-body text-xs mt-1 pb-1" style={{ color: 'var(--text)', opacity: 0.5 }}>
-              {formattedDate}
-            </p>
-          </div>
-          <button
-            onClick={(e) => { e.stopPropagation(); setEditActive((v) => !v) }}
-            aria-label={editActive ? 'Cerrar acciones' : 'Gestionar date'}
-            className="flex-shrink-0 flex items-center justify-center rounded-full"
-            style={{
-              width: '44px',
-              height: '44px',
-              backgroundColor: editActive ? 'var(--accent)' : 'rgba(44,26,14,0.08)',
-              color: editActive ? '#fff' : 'var(--text)',
-              touchAction: 'manipulation',
-              WebkitTapHighlightColor: 'transparent',
-              transition: 'background-color 150ms ease-out, color 150ms ease-out',
-            }}
-          >
-            <svg xmlns="http://www.w3.org/2000/svg" className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
-            </svg>
-          </button>
+        {/* Caption */}
+        <div className="polaroid-caption">
+          <p className="font-script text-base leading-snug truncate" style={{ color: 'var(--text)' }}>
+            {date.title}
+          </p>
+          <p className="font-body text-xs mt-1 pb-1" style={{ color: 'var(--text)', opacity: 0.5 }}>
+            {formattedDate}
+          </p>
         </div>
       </div>
 
@@ -95,7 +71,7 @@ export function DateCard({ date, onClick, onDelete, onMoveUp, onMoveDown, isFirs
         {...attributes}
         {...listeners}
         onClick={(e) => e.stopPropagation()}
-        className={`date-card-action-btn hidden md:flex ${editActive ? 'photo-btn-in' : 'opacity-0 pointer-events-none'}`}
+        className={`date-card-action-btn hidden md:flex ${editMode ? 'photo-btn-in' : 'opacity-0 pointer-events-none'}`}
         style={{ top: '0.625rem', left: '0.625rem', cursor: 'grab' }}
         aria-label="Mover date"
       >
@@ -107,7 +83,7 @@ export function DateCard({ date, onClick, onDelete, onMoveUp, onMoveDown, isFirs
       {/* ── Desktop: delete ── */}
       <button
         onClick={(e) => { e.stopPropagation(); onDelete(date) }}
-        className={`date-card-action-btn date-card-delete-btn hidden md:flex ${editActive ? 'photo-btn-in' : 'opacity-0 pointer-events-none'}`}
+        className={`date-card-action-btn date-card-delete-btn hidden md:flex ${editMode ? 'photo-btn-in' : 'opacity-0 pointer-events-none'}`}
         style={{ top: '0.5rem', right: '0.5rem', width: '42px', height: '42px' }}
         aria-label="Eliminar date"
       >
@@ -116,8 +92,8 @@ export function DateCard({ date, onClick, onDelete, onMoveUp, onMoveDown, isFirs
         </svg>
       </button>
 
-      {/* ── Mobile: up / down / delete (editActive only) ── */}
-      {editActive && (
+      {/* ── Mobile: up / down / delete (editMode only) ── */}
+      {editMode && (
         <>
           {!isFirst && (
             <button
@@ -146,7 +122,7 @@ export function DateCard({ date, onClick, onDelete, onMoveUp, onMoveDown, isFirs
           )}
 
           <button
-            onClick={(e) => { e.stopPropagation(); setEditActive(false); onDelete(date) }}
+            onClick={(e) => { e.stopPropagation(); onDelete(date) }}
             className="date-card-action-btn date-card-delete-btn md:hidden photo-btn-in"
             style={{ top: '0.625rem', right: '0.625rem' }}
             aria-label="Eliminar date"
