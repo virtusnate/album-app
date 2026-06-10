@@ -228,18 +228,12 @@ label[for] {
   background-color: rgb(150, 40, 27);
 }
 
-/* Bounce-in entrance when desktop card is hovered */
+/* Bounce-in entrance for action buttons */
 @keyframes delete-btn-enter {
   0%   { transform: scale(0.3) rotate(-15deg); opacity: 0; }
   60%  { transform: scale(1.22) rotate(6deg);  opacity: 1; }
   80%  { transform: scale(0.92) rotate(-3deg); }
   100% { transform: scale(1)    rotate(0deg);  }
-}
-
-@media (hover: hover) {
-  .polaroid-card:hover .date-card-delete-btn {
-    animation: delete-btn-enter 320ms cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
-  }
 }
 
 /* ── Reduced motion ───────────────────────────── */
