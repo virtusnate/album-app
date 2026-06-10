@@ -9,6 +9,6 @@ describe('Header', () => {
 
   it('renders the subtitle', () => {
     render(<Header />)
-    expect(screen.getByText(/nuestras experiencias juntos/i)).toBeInTheDocument()
+    expect(screen.getByText(/nuestro baúl de recuerdos/i)).toBeInTheDocument()
   })
 })
