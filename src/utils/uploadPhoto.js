@@ -21,6 +21,7 @@ export async function uploadPhoto(file, dateId, order) {
 
   const docRef = await addDoc(collection(db, 'dates', dateId, 'photos'), {
     storageUrl,
+    type: 'image',
     order,
     focalX: 0.5,
     focalY: 0.5,
