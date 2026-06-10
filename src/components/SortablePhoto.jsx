@@ -44,7 +44,7 @@ export function SortablePhoto({ photo, dateId, editMode, onDelete, onOpenLightbo
           outline: mobileActive ? '2.5px solid var(--accent)' : undefined,
           outlineOffset: mobileActive ? '2px' : undefined,
         }}
-        className="relative group rounded-sm overflow-visible shadow-md"
+        className="relative rounded-sm overflow-visible shadow-md"
         onPointerDown={startLongPress}
         onPointerUp={cancelLongPress}
         onPointerCancel={cancelLongPress}
@@ -87,7 +87,7 @@ export function SortablePhoto({ photo, dateId, editMode, onDelete, onOpenLightbo
           {...attributes}
           {...listeners}
           onClick={(e) => e.stopPropagation()}
-          className={`date-card-action-btn hidden md:flex ${editMode ? 'opacity-100' : 'opacity-0 group-hover:opacity-100'}`}
+          className={`date-card-action-btn hidden md:flex ${editMode ? 'photo-btn-in' : 'opacity-0 pointer-events-none'}`}
           style={{ top: '0.5rem', left: '0.5rem', cursor: 'grab' }}
           aria-label="Mover foto"
         >
@@ -100,7 +100,7 @@ export function SortablePhoto({ photo, dateId, editMode, onDelete, onOpenLightbo
         {photo.type !== 'video' && (
           <button
             onClick={(e) => { e.stopPropagation(); setEditingFocal(true) }}
-            className={`date-card-action-btn hidden md:flex ${editMode ? 'opacity-100' : 'opacity-0 group-hover:opacity-100'}`}
+            className={`date-card-action-btn hidden md:flex ${editMode ? 'photo-btn-in' : 'opacity-0 pointer-events-none'}`}
             style={{ bottom: '0.5rem', left: '0.5rem' }}
             aria-label="Punto de enfoque"
           >
@@ -114,7 +114,7 @@ export function SortablePhoto({ photo, dateId, editMode, onDelete, onOpenLightbo
         {/* ── Desktop: delete ── */}
         <button
           onClick={(e) => { e.stopPropagation(); onDelete(photo) }}
-          className={`date-card-action-btn date-card-delete-btn hidden md:flex ${editMode ? 'opacity-100' : 'opacity-0 group-hover:opacity-100'}`}
+          className={`date-card-action-btn date-card-delete-btn hidden md:flex ${editMode ? 'photo-btn-in' : 'opacity-0 pointer-events-none'}`}
           style={{ top: '0.5rem', right: '0.5rem', width: '42px', height: '42px' }}
           aria-label="Eliminar foto"
         >
@@ -129,7 +129,7 @@ export function SortablePhoto({ photo, dateId, editMode, onDelete, onOpenLightbo
             {photo.type !== 'video' && (
               <button
                 onClick={(e) => { e.stopPropagation(); setMobileActive(false); setEditingFocal(true) }}
-                className="date-card-action-btn md:hidden"
+                className="date-card-action-btn md:hidden photo-btn-in"
                 style={{ bottom: '0.5rem', left: '0.5rem', width: '44px', height: '44px' }}
                 aria-label="Punto de enfoque"
               >
@@ -141,7 +141,7 @@ export function SortablePhoto({ photo, dateId, editMode, onDelete, onOpenLightbo
             )}
             <button
               onClick={(e) => { e.stopPropagation(); setMobileActive(false); onDelete(photo) }}
-              className="date-card-action-btn date-card-delete-btn md:hidden"
+              className="date-card-action-btn date-card-delete-btn md:hidden photo-btn-in"
               style={{ top: '0.5rem', right: '0.5rem', width: '44px', height: '44px' }}
               aria-label="Eliminar foto"
             >

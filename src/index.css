@@ -270,6 +270,18 @@ header {
   }
 }
 
+/* ── Photo grid action buttons entrance ──────────── */
+.photo-btn-in {
+  animation: delete-btn-enter 320ms cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .photo-btn-in {
+    animation: none;
+    opacity: 1;
+  }
+}
+
 /* ── Lightbox ─────────────────────────────────────── */
 @keyframes lightbox-in {
   from { opacity: 0; transform: scale(0.94); }
