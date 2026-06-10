@@ -1,35 +1,13 @@
-import { useRef, useState, useCallback, useEffect } from 'react'
+import { useState } from 'react'
 import { useSortable } from '@dnd-kit/sortable'
 import { CSS } from '@dnd-kit/utilities'
 import { FocalPointEditor } from './FocalPointEditor'
 
-const LONG_PRESS_MS = 500
-
 export function SortablePhoto({ photo, dateId, editMode, onDelete, onOpenLightbox }) {
   const [editingFocal, setEditingFocal] = useState(false)
-  const [mobileActive, setMobileActive] = useState(false)
-  const timerRef = useRef(null)
-  const didLongPressRef = useRef(false)
-
   const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({ id: photo.id })
 
-  const startLongPress = useCallback((e) => {
-    if (e.pointerType !== 'touch') return
-    didLongPressRef.current = false
-    timerRef.current = setTimeout(() => {
-      didLongPressRef.current = true
-      setMobileActive(true)
-      if (navigator.vibrate) navigator.vibrate(30)
-    }, LONG_PRESS_MS)
-  }, [])
-
-  const cancelLongPress = useCallback(() => clearTimeout(timerRef.current), [])
-
-  useEffect(() => () => clearTimeout(timerRef.current), [])
-
   function handleClick() {
-    if (didLongPressRef.current) { didLongPressRef.current = false; return }
-    if (mobileActive) { setMobileActive(false); return }
     if (onOpenLightbox) onOpenLightbox()
   }
 
@@ -41,13 +19,8 @@ export function SortablePhoto({ photo, dateId, editMode, onDelete, onOpenLightbo
           transform: CSS.Transform.toString(transform),
           transition,
           opacity: isDragging ? 0.4 : 1,
-          outline: mobileActive ? '2.5px solid var(--accent)' : undefined,
-          outlineOffset: mobileActive ? '2px' : undefined,
         }}
         className="relative rounded-sm overflow-visible shadow-md"
-        onPointerDown={startLongPress}
-        onPointerUp={cancelLongPress}
-        onPointerCancel={cancelLongPress}
       >
         {/* Thumbnail */}
         <div className="relative rounded-sm overflow-hidden" style={{ paddingBottom: '133%' }}>
@@ -123,12 +96,12 @@ export function SortablePhoto({ photo, dateId, editMode, onDelete, onOpenLightbo
           </svg>
         </button>
 
-        {/* ── Mobile: long-press or editMode reveals actions ── */}
-        {(mobileActive || editMode) && (
+        {/* ── Mobile: editMode only (no long-press) ── */}
+        {editMode && (
           <>
             {photo.type !== 'video' && (
               <button
-                onClick={(e) => { e.stopPropagation(); setMobileActive(false); setEditingFocal(true) }}
+                onClick={(e) => { e.stopPropagation(); setEditingFocal(true) }}
                 className="date-card-action-btn md:hidden photo-btn-in"
                 style={{ bottom: '0.5rem', left: '0.5rem', width: '44px', height: '44px' }}
                 aria-label="Punto de enfoque"
@@ -140,7 +113,7 @@ export function SortablePhoto({ photo, dateId, editMode, onDelete, onOpenLightbo
               </button>
             )}
             <button
-              onClick={(e) => { e.stopPropagation(); setMobileActive(false); onDelete(photo) }}
+              onClick={(e) => { e.stopPropagation(); onDelete(photo) }}
               className="date-card-action-btn date-card-delete-btn md:hidden photo-btn-in"
               style={{ top: '0.5rem', right: '0.5rem', width: '44px', height: '44px' }}
               aria-label="Eliminar foto"
