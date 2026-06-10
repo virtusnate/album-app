@@ -1,14 +1,17 @@
-import React, { useEffect, useCallback, useState } from 'react'
+import React, { useEffect, useCallback, useState, useRef } from 'react'
 import { useSwipeable } from 'react-swipeable'
 
 export function PhotoLightbox({ photos, startIndex, onClose }) {
   const [index, setIndex] = useState(startIndex)
   const [closing, setClosing] = useState(false)
+  const closeTimerRef = useRef(null)
 
   const close = useCallback(() => {
     setClosing(true)
-    setTimeout(onClose, 140)
+    closeTimerRef.current = setTimeout(onClose, 140)
   }, [onClose])
+
+  useEffect(() => () => clearTimeout(closeTimerRef.current), [])
 
   const prev = useCallback(() => setIndex((i) => (i > 0 ? i - 1 : photos.length - 1)), [photos.length])
   const next = useCallback(() => setIndex((i) => (i < photos.length - 1 ? i + 1 : 0)), [photos.length])
@@ -31,6 +34,8 @@ export function PhotoLightbox({ photos, startIndex, onClose }) {
   })
 
   const photo = photos[index]
+
+  if (!photo) return null
 
   return (
     <div

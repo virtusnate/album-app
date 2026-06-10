@@ -66,7 +66,7 @@ export function PhotoGrid({ photos, dateId, onOpenLightbox }) {
               photo={photo}
               dateId={dateId}
               onDelete={handleDelete}
-              onOpenLightbox={() => onOpenLightbox(i)}
+              onOpenLightbox={onOpenLightbox ? () => onOpenLightbox(i) : undefined}
             />
           ))}
         </div>
