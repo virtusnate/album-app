@@ -21,8 +21,17 @@ export function uploadVideo(file, dateId, order, onProgress) {
 
     xhr.addEventListener('load', async () => {
       try {
-        const data = JSON.parse(xhr.responseText)
-        if (xhr.status !== 200) { reject(new Error(data.error?.message ?? 'Upload failed')); return }
+        let data
+        try {
+          data = JSON.parse(xhr.responseText)
+        } catch {
+          reject(new Error(`Upload failed: unparseable response (HTTP ${xhr.status})`))
+          return
+        }
+        if (xhr.status !== 200) {
+          reject(new Error(data.error?.message ?? 'Upload failed'))
+          return
+        }
 
         const storageUrl = data.secure_url
         const thumbnailUrl = storageUrl

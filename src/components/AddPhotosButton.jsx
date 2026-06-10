@@ -14,25 +14,27 @@ export function AddPhotosButton({ dateId, currentPhotoCount }) {
     const videos = files.filter((f) => f.type.startsWith('video/'))
     const images = files.filter((f) => !f.type.startsWith('video/'))
 
-    if (images.length > 0) {
-      setUploadState('images')
-      await Promise.all(
-        images.map((file, i) =>
-          compressImage(file).then((compressed) =>
-            uploadPhoto(compressed, dateId, currentPhotoCount + i)
+    try {
+      if (images.length > 0) {
+        setUploadState('images')
+        await Promise.all(
+          images.map((file, i) =>
+            compressImage(file).then((compressed) =>
+              uploadPhoto(compressed, dateId, currentPhotoCount + i)
+            )
           )
         )
-      )
-    }
+      }
 
-    for (let i = 0; i < videos.length; i++) {
-      const order = currentPhotoCount + images.length + i
-      setUploadState(0)
-      await uploadVideo(videos[i], dateId, order, (pct) => setUploadState(pct))
+      for (let i = 0; i < videos.length; i++) {
+        const order = currentPhotoCount + images.length + i
+        setUploadState(0)
+        await uploadVideo(videos[i], dateId, order, (pct) => setUploadState(pct))
+      }
+    } finally {
+      setUploadState(null)
+      e.target.value = ''
     }
-
-    setUploadState(null)
-    e.target.value = ''
   }
 
   const isUploading = uploadState !== null
