@@ -1,24 +1,33 @@
 // src/components/EditDateModal.jsx
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { doc, updateDoc, Timestamp } from 'firebase/firestore'
 import { db } from '../firebase'
 
 export function EditDateModal({ date, onClose }) {
-  const [title, setTitle] = useState(date.title)
+  const [title, setTitle] = useState(date.title ?? '')
   const [dateStr, setDateStr] = useState(
     date.date?.toDate().toISOString().split('T')[0] ?? ''
   )
   const [saving, setSaving] = useState(false)
 
+  useEffect(() => {
+    const onKey = (e) => e.key === 'Escape' && onClose()
+    window.addEventListener('keydown', onKey)
+    return () => window.removeEventListener('keydown', onKey)
+  }, [onClose])
+
   async function handleSave() {
     if (!title.trim() || !dateStr) return
     setSaving(true)
-    await updateDoc(doc(db, 'dates', date.id), {
-      title: title.trim(),
-      date: Timestamp.fromDate(new Date(dateStr + 'T12:00:00')),
-    })
-    setSaving(false)
-    onClose()
+    try {
+      await updateDoc(doc(db, 'dates', date.id), {
+        title: title.trim(),
+        date: Timestamp.fromDate(new Date(dateStr + 'T12:00:00')),
+      })
+      onClose()
+    } finally {
+      setSaving(false)
+    }
   }
 
   return (
