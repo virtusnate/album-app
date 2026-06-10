@@ -7,12 +7,14 @@ import { useDates } from '../hooks/useDates'
 import { DateCard } from './DateCard'
 import { CreateDateModal } from './CreateDateModal'
 import { ConfirmDialog } from './ConfirmDialog'
+import { EditDateModal } from './EditDateModal'
 
 export function HomeView({ onSelectDate }) {
   const dates = useDates()
   const [orderedDates, setOrderedDates] = useState([])
   const [showModal, setShowModal] = useState(false)
   const [dateToDelete, setDateToDelete] = useState(null)
+  const [dateToEdit, setDateToEdit] = useState(null)
   const initialized = useRef(false)
 
   const sensors = useSensors(useSensor(PointerSensor, { activationConstraint: { distance: 8 } }))
@@ -99,6 +101,7 @@ export function HomeView({ onSelectDate }) {
                   date={date}
                   onClick={onSelectDate}
                   onDelete={setDateToDelete}
+                  onEdit={setDateToEdit}
                   onMoveUp={(id) => handleMove(id, 'up')}
                   onMoveDown={(id) => handleMove(id, 'down')}
                   isFirst={i === 0}
@@ -126,6 +129,10 @@ export function HomeView({ onSelectDate }) {
           onConfirm={handleDeleteConfirm}
           onCancel={() => setDateToDelete(null)}
         />
+      )}
+
+      {dateToEdit && (
+        <EditDateModal date={dateToEdit} onClose={() => setDateToEdit(null)} />
       )}
     </main>
   )
