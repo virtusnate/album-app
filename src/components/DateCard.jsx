@@ -1,4 +1,4 @@
-import { useRef, useState, useCallback } from 'react'
+import { useRef, useState, useCallback, useEffect } from 'react'
 import { useSortable } from '@dnd-kit/sortable'
 import { CSS } from '@dnd-kit/utilities'
 
@@ -29,6 +29,8 @@ export function DateCard({ date, onClick, onDelete, onEdit, onMoveUp, onMoveDown
   const cancelLongPress = useCallback(() => {
     clearTimeout(timerRef.current)
   }, [])
+
+  useEffect(() => () => clearTimeout(timerRef.current), [])
 
   const handleCardClick = useCallback((e) => {
     if (didLongPressRef.current) {

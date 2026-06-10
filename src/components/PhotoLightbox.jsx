@@ -8,7 +8,7 @@ export function PhotoLightbox({ photos, startIndex, onClose }) {
 
   const close = useCallback(() => {
     setClosing(true)
-    closeTimerRef.current = setTimeout(onClose, 140)
+    closeTimerRef.current = setTimeout(onClose, 160)
   }, [onClose])
 
   useEffect(() => () => clearTimeout(closeTimerRef.current), [])
