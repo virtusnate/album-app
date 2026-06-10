@@ -1,4 +1,4 @@
-import { useRef, useState, useCallback } from 'react'
+import { useRef, useState, useCallback, useEffect } from 'react'
 import { useSortable } from '@dnd-kit/sortable'
 import { CSS } from '@dnd-kit/utilities'
 import { FocalPointEditor } from './FocalPointEditor'
@@ -24,6 +24,8 @@ export function SortablePhoto({ photo, dateId, onDelete, onOpenLightbox }) {
   }, [])
 
   const cancelLongPress = useCallback(() => clearTimeout(timerRef.current), [])
+
+  useEffect(() => () => clearTimeout(timerRef.current), [])
 
   function handleClick() {
     if (didLongPressRef.current) { didLongPressRef.current = false; return }
