@@ -74,8 +74,8 @@ export function DateCard({ date, onClick, onDelete, onMoveUp, onMoveDown, isFirs
             aria-label={editActive ? 'Cerrar acciones' : 'Gestionar date'}
             className="flex-shrink-0 flex items-center justify-center rounded-full"
             style={{
-              width: '32px',
-              height: '32px',
+              width: '44px',
+              height: '44px',
               backgroundColor: editActive ? 'var(--accent)' : 'rgba(44,26,14,0.08)',
               color: editActive ? '#fff' : 'var(--text)',
               touchAction: 'manipulation',
